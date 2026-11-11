@@ -6,7 +6,7 @@
     <title>Warong Wawali - Pesan Makanan & Minuman</title>
     
     <!-- PWA Web App Manifest -->
-    <link rel="manifest" href="manifest.json">  
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ea68c2">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -342,6 +342,15 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
+        // Register Service Worker untuk PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Registered!', reg))
+                    .catch(err => console.error('Service Worker Error:', err));
+            });
+        }
+
         const categoriesDB = [
             { id: 'all', name: 'Semua Menu', icon: 'fa-utensils' },
             { id: 'makanan', name: 'Menu Makanan', icon: 'fa-bowl-rice' },
@@ -390,15 +399,14 @@
             }
         });
 
-        // Event penangkap prompt penginstalan PWA otomatis
+        // Tangkap prompt PWA saat Chrome mendeteksi aplikasi siap dipasang
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Tampilkan banner di bagian atas web
             document.getElementById('pwa-install-banner')?.classList.remove('hidden');
         });
 
-        // Fungsi yang dipanggil saat tombol Install di web diklik
+        // Trigger instalasi PWA saat tombol diklik
         async function triggerPwaInstall() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
@@ -408,7 +416,7 @@
                 }
                 deferredPrompt = null;
             } else {
-                alert("Aplikasi siap dipasang! Jika pop-up tidak muncul otomatis, tekan titik 3 di browser Chrome lalu pilih 'Tambahkan ke Layar Utama'.");
+                alert("Pop-up otomatis belum siap. Anda bisa klik titik 3 di pojok kanan atas Chrome HP, lalu pilih 'Tambahkan ke Layar Utama' atau 'Install aplikasi'.");
             }
         }
 
