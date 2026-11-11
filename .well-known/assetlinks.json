@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.christowalelang801_hash.twa",
+        "sha256_cert_fingerprints": ["61:09:3E:EC:BB:5C:FA:2A:29:D5:09:00:43:4F:AD:A2:EE:1B:F7:B4:61:1B:6D:43:BD:A7:9D:46:0E:99:79:E1"]
+      }
+    }]
