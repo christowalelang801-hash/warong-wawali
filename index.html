@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warong Wawali - Pesan Makanan & Minuman</title>
     
-    <!-- PWA Web App Manifest (Supaya Bisa Di-download di HP) -->
+    <!-- PWA Web App Manifest -->
     <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIldhcm9uZyBXYXdhbGkiLAogICJzaG9ydF9uYW1lIjogIldhd2FsaSIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2VhNjhjMiIsCiAgInRoZW1lX2NvbG9yIjogIiNlYTY4YzIiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2NkbmpzLmNsb3VkZmxhcmUuY29tL2FqYXgvbGlicy9mb250LWF3ZXNvbWUvNi40LjAvc3Zncy9zb2xpZC91dGVuc2lscy5zdmciLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9CiAgXQp9">
     <meta name="theme-color" content="#ea68c2">
     <meta name="mobile-web-app-capable" content="yes">
@@ -31,19 +31,19 @@
 </head>
 <body class="bg-gray-100 font-sans pb-24 md:pb-8">
 
-    <!-- Tombol Banner Download Aplikasi HP (Hanya muncul jika bisa di-install) -->
-    <div id="pwa-install-banner" class="bg-yellow-400 text-orange-950 px-4 py-2 text-xs font-bold flex justify-between items-center hidden z-50 sticky top-0 shadow-md">
+    <!-- Banner Download Aplikasi HP di Atas Web -->
+    <div id="pwa-install-banner" class="bg-yellow-400 text-orange-950 px-4 py-2.5 text-xs font-bold flex justify-between items-center z-50 sticky top-0 shadow-md">
         <div class="flex items-center space-x-2">
-            <i class="fa-solid fa-mobile-screen-button text-base"></i>
-            <span>Install Aplikasi Warong Wawali di HP Kamu!</span>
+            <i class="fa-solid fa-circle-down text-lg text-orange-700 animate-bounce"></i>
+            <span>Download Aplikasi Warong Wawali ke HP!</span>
         </div>
-        <button id="btn-install-pwa" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 rounded-lg text-xs font-bold transition">
-            Install
+        <button onclick="triggerPwaInstall()" class="bg-orange-600 hover:bg-orange-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition shadow">
+            <i class="fa-solid fa-download mr-1"></i>Install Aplikasi
         </button>
     </div>
 
     <!-- Header / Navbar Banner -->
-    <header class="bg-gradient-to-r from-orange-600 to-amber-600 text-white sticky top-0 z-40 shadow-md">
+    <header class="bg-gradient-to-r from-orange-600 to-amber-600 text-white z-40 shadow-md">
         <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="bg-white text-orange-600 p-2 rounded-full font-black text-lg shadow">
@@ -55,10 +55,19 @@
                 </div>
             </div>
             
-            <button onclick="toggleCartModal()" class="relative p-2.5 bg-orange-700 hover:bg-orange-800 rounded-full transition flex items-center justify-center shadow">
-                <i class="fa-solid fa-basket-shopping text-lg text-yellow-300"></i>
-                <span id="cart-badge" class="absolute -top-1 -right-1 bg-yellow-400 text-orange-950 font-black text-xs w-5 h-5 rounded-full flex items-center justify-center border-2 border-orange-600 hidden">0</span>
-            </button>
+            <div class="flex items-center space-x-2">
+                <!-- Tombol Download di Navbar -->
+                <button onclick="triggerPwaInstall()" class="p-2 bg-yellow-400 text-orange-950 font-extrabold text-xs rounded-full hover:bg-yellow-300 transition flex items-center space-x-1 px-3 shadow">
+                    <i class="fa-solid fa-download"></i>
+                    <span class="hidden sm:inline">Install App</span>
+                </button>
+
+                <!-- Tombol Keranjang -->
+                <button onclick="toggleCartModal()" class="relative p-2.5 bg-orange-700 hover:bg-orange-800 rounded-full transition flex items-center justify-center shadow">
+                    <i class="fa-solid fa-basket-shopping text-lg text-yellow-300"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-yellow-400 text-orange-950 font-black text-xs w-5 h-5 rounded-full flex items-center justify-center border-2 border-orange-600 hidden">0</span>
+                </button>
+            </div>
         </div>
 
         <div class="bg-orange-800 text-orange-100 text-xs py-1.5 px-4">
@@ -366,7 +375,7 @@
         let userAddress = localStorage.getItem('wawali_address') || "Jl. Lantaan 1, Kelurahan Wawali";
         let activeOrder = JSON.parse(localStorage.getItem('wawali_active_order')) || null;
         let mapObj = null;
-        let deferredPrompt;
+        let deferredPrompt = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('current-location-text').innerText = userAddress;
@@ -381,23 +390,27 @@
             }
         });
 
-        // Event listener PWA Download
+        // Event penangkap prompt penginstalan PWA otomatis
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('pwa-install-banner').classList.remove('hidden');
+            // Tampilkan banner di bagian atas web
+            document.getElementById('pwa-install-banner')?.classList.remove('hidden');
         });
 
-        document.getElementById('btn-install-pwa')?.addEventListener('click', async () => {
+        // Fungsi yang dipanggil saat tombol Install di web diklik
+        async function triggerPwaInstall() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
-                    document.getElementById('pwa-install-banner').classList.add('hidden');
+                    document.getElementById('pwa-install-banner')?.classList.add('hidden');
                 }
                 deferredPrompt = null;
+            } else {
+                alert("Aplikasi siap dipasang! Jika pop-up tidak muncul otomatis, tekan titik 3 di browser Chrome lalu pilih 'Tambahkan ke Layar Utama'.");
             }
-        });
+        }
 
         function formatRupiah(number) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
