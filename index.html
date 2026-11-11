@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Warong Wawali - Pesan Makanan & Minuman</title>
     
-    <!-- Meta Pengatur Mode Aplikasi Layar Penuh (Menghilangkan URL Chrome) -->
+    <!-- Meta Pengatur Mode Aplikasi Layar Penuh -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -34,7 +34,7 @@
 </head>
 <body class="bg-gray-100 font-sans pb-24 md:pb-8 select-none">
 
-    <!-- Header / Navbar Aplikasi Warong Wawali -->
+    <!-- Header / Navbar Aplikasi Warong Wawali (Tanpa Tombol Download) -->
     <header class="bg-gradient-to-r from-orange-600 to-amber-600 text-white z-40 shadow-md">
         <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -328,7 +328,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // Register Service Worker untuk PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
